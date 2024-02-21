@@ -48,4 +48,42 @@ public class BasicCParserTest {
         assertEquals("=", parser.nextToken(), "Should correctly parse '='");
         assertEquals(";", parser.nextToken(), "Should correctly parse ';'");
     }
+
+    // Test to ensure an empty string is handled correctly
+    @Test
+    public void testNextTokenWithEmptyString() throws IOException, ImagingException {
+        // Arrange
+        String inputString = "";
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(inputString.getBytes());
+        BasicCParser parser = new BasicCParser(inputStream);
+
+        // Act and Assert
+        assertNull(parser.nextToken(), "Should return null for an empty string");
+    }
+
+    // Test to ensure an unterminated string throws ImagingException
+    @Test
+    public void testNextTokenWithUnterminatedString() {
+        // Arrange
+        String inputString = "\"Unterminated String";
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(inputString.getBytes());
+        BasicCParser parser = new BasicCParser(inputStream);
+
+        // Act and Assert
+        assertThrows(ImagingException.class, () -> parser.nextToken(), "Should throw ImagingException for unterminated string");
+    }
+
+    // Covers following line in nextToken() function: 
+    //else { throw new ImagingException("Unhandled/invalid character '" + (char) c + "' found in XPM file");}
+    @Test
+    public void testNextTokenWithInvalidCharacter() {
+        // Arrange
+        String inputString = "!";  // An invalid character
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(inputString.getBytes());
+        BasicCParser parser = new BasicCParser(inputStream);
+
+        // Act and Assert
+        assertThrows(ImagingException.class, parser::nextToken,
+                "Should throw ImagingException for unhandled/invalid character '!' in XPM file");
+    }
 }
