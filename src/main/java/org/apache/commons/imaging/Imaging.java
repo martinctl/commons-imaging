@@ -38,6 +38,7 @@ import org.apache.commons.imaging.common.XmpEmbeddable;
 import org.apache.commons.imaging.icc.IccProfileInfo;
 import org.apache.commons.imaging.icc.IccProfileParser;
 import org.apache.commons.imaging.internal.ImageParserFactory;
+import se.kth.dd2480.BranchCoverageTracker;
 
 /**
  * The primary application programming interface (API) to the Imaging library.
@@ -701,102 +702,133 @@ public final class Imaging {
      * @throws IOException              in the event of an unrecoverable I/O condition.
      */
     public static ImageFormat guessFormat(final ByteSource byteSource) throws IOException {
+        BranchCoverageTracker.addCoverage();
         if (byteSource == null) {
+            BranchCoverageTracker.addCoverage();
             return ImageFormats.UNKNOWN;
         }
 
         try (InputStream is = byteSource.getInputStream()) {
+            BranchCoverageTracker.addCoverage();
             final int i1 = is.read();
             final int i2 = is.read();
             if (i1 < 0 || i2 < 0) {
+                BranchCoverageTracker.addCoverage();
                 throw new IllegalArgumentException("Couldn't read magic numbers to guess format.");
             }
 
+            BranchCoverageTracker.addCoverage();
             final int b1 = i1 & 0xff;
             final int b2 = i2 & 0xff;
             final int[] bytePair = { b1, b2, };
 
             if (compareBytePair(MAGIC_NUMBERS_GIF, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.GIF;
                 // } else if (b1 == 0x00 && b2 == 0x00) // too similar to TGA
                 // {
                 // return ImageFormat.IMAGE_FORMAT_ICO;
             }
             if (compareBytePair(MAGIC_NUMBERS_PNG, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.PNG;
             }
             if (compareBytePair(MAGIC_NUMBERS_JPEG, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.JPEG;
             }
             if (compareBytePair(MAGIC_NUMBERS_BMP, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.BMP;
             }
             if (compareBytePair(MAGIC_NUMBERS_TIFF_MOTOROLA, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.TIFF;
             }
             if (compareBytePair(MAGIC_NUMBERS_TIFF_INTEL, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.TIFF;
             }
             if (compareBytePair(MAGIC_NUMBERS_PSD, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.PSD;
             }
             if (compareBytePair(MAGIC_NUMBERS_PAM, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.PAM;
             }
             if (compareBytePair(MAGIC_NUMBERS_PBM_A, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.PBM;
             }
             if (compareBytePair(MAGIC_NUMBERS_PBM_B, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.PBM;
             }
             if (compareBytePair(MAGIC_NUMBERS_PGM_A, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.PGM;
             }
             if (compareBytePair(MAGIC_NUMBERS_PGM_B, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.PGM;
             }
             if (compareBytePair(MAGIC_NUMBERS_PPM_A, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.PPM;
             }
             if (compareBytePair(MAGIC_NUMBERS_PPM_B, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.PPM;
             }
             if (compareBytePair(MAGIC_NUMBERS_JBIG2_1, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 final int i3 = is.read();
                 final int i4 = is.read();
                 if (i3 < 0 || i4 < 0) {
+                    BranchCoverageTracker.addCoverage();
                     throw new IllegalArgumentException("Couldn't read magic numbers to guess format.");
                 }
 
+                BranchCoverageTracker.addCoverage();
                 final int b3 = i3 & 0xff;
                 final int b4 = i4 & 0xff;
                 final int[] bytePair2 = { b3, b4, };
                 if (compareBytePair(MAGIC_NUMBERS_JBIG2_2, bytePair2)) {
+                    BranchCoverageTracker.addCoverage();
                     return ImageFormats.JBIG2;
                 }
             } else if (compareBytePair(MAGIC_NUMBERS_ICNS, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.ICNS;
             } else if (compareBytePair(MAGIC_NUMBERS_DCX, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.DCX;
             } else if (compareBytePair(MAGIC_NUMBERS_RGBE, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 return ImageFormats.RGBE;
             } else if (compareBytePair(MAGIC_NUMBERS_RIFF_1, bytePair)) {
+                BranchCoverageTracker.addCoverage();
                 final int i3 = is.read();
                 final int i4 = is.read();
                 if (i3 < 0 || i4 < 0) {
+                    BranchCoverageTracker.addCoverage();
                     throw new IllegalArgumentException("Couldn't read magic numbers to guess format.");
                 }
-
+                BranchCoverageTracker.addCoverage();
                 final int b3 = i3 & 0xff;
                 final int b4 = i4 & 0xff;
                 final int[] bytePair2 = { b3, b4, };
                 if (compareBytePair(MAGIC_NUMBERS_RIFF_2, bytePair2)) {
+                    BranchCoverageTracker.addCoverage();
                     final byte[] bytes = new byte[4];
                     if (is.read(bytes) < 4) { // Skip file size
+                        BranchCoverageTracker.addCoverage();
                         throw new IllegalArgumentException("Couldn't read magic numbers to guess format.");
                     }
 
                     if (is.read(bytes) == 4 && Arrays.equals(MAGIC_NUMBERS_WEBP, bytes)) {
+                        BranchCoverageTracker.addCoverage();
                         return ImageFormats.WEBP;
                     }
                 }
@@ -804,8 +836,10 @@ public final class Imaging {
             return Stream.of(ImageFormats.values()).filter(imageFormat -> Stream.of(imageFormat.getExtensions()).anyMatch(extension -> {
                 final String fileName = byteSource.getFileName();
                 if (fileName == null || fileName.trim().isEmpty()) {
+                    BranchCoverageTracker.addCoverage();
                     return false;
                 }
+                BranchCoverageTracker.addCoverage();
                 final String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
                 return extension != null && !extension.trim().isEmpty() && fileExtension.equalsIgnoreCase(extension);
             })).findFirst().orElse(ImageFormats.UNKNOWN);
