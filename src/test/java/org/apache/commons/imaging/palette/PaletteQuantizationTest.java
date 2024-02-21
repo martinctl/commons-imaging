@@ -121,6 +121,7 @@ public class PaletteQuantizationTest extends AbstractImagingTest {
         checkPaletteDetails(rainbowImage, 2, 2);
     }
 
+    // Checks red-dominated image with limit of 2 max color palette
     @Test
     public void checkLAMCredMode() throws ImagingException {
         final BufferedImage rainbowImage = new BufferedImage(9, 10, BufferedImage.TYPE_INT_RGB);
@@ -137,6 +138,7 @@ public class PaletteQuantizationTest extends AbstractImagingTest {
         }
         checkPaletteDetails(rainbowImage, 2, 2);
     }
+    // Checks green-dominated image with limit of 2 max color palette
     @Test
     public void checkLAMCgreenMode() throws ImagingException {
         final BufferedImage rainbowImage = new BufferedImage(9, 10, BufferedImage.TYPE_INT_RGB);
@@ -153,7 +155,7 @@ public class PaletteQuantizationTest extends AbstractImagingTest {
         }
         checkPaletteDetails(rainbowImage, 2, 2);
     }
-
+    // Checks blue-dominated image with limit of 2 max color palette
     @Test
     public void checkLAMCblueMode() throws ImagingException {
         final BufferedImage rainbowImage = new BufferedImage(9, 10, BufferedImage.TYPE_INT_RGB);
