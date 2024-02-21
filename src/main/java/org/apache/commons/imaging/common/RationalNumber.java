@@ -94,14 +94,17 @@ public class RationalNumber extends Number {
      * @return the RationalNumber representation of the double value
      */
     public static RationalNumber valueOf(double value) {
+        // 2 dec 1 out = 1
         if (value >= Integer.MAX_VALUE) {
             return new RationalNumber(Integer.MAX_VALUE, 1);
         }
+        // 2 dec 1 out = 1
         if (value <= -Integer.MAX_VALUE) {
             return new RationalNumber(-Integer.MAX_VALUE, 1);
         }
 
         boolean negative = false;
+        // 2 dec = 2
         if (value < 0) {
             negative = true;
             value = Math.abs(value);
@@ -110,10 +113,12 @@ public class RationalNumber extends Number {
         RationalNumber l;
         RationalNumber h;
 
+        // 2 dec 1 out = 1
         if (value == 0) {
             return new RationalNumber(0, 1);
         }
-        if (value >= 1) {
+        // 2 + 2 = 4 dec
+       if (value >= 1) {
             final int approx = (int) value;
             if (approx < value) {
                 l = new RationalNumber(approx, 1);
@@ -135,15 +140,19 @@ public class RationalNumber extends Number {
         Option low = Option.factory(l, value);
         Option high = Option.factory(h, value);
 
+        // 2 dec
         Option bestOption = low.error < high.error ? low : high;
 
         final int maxIterations = 100; // value is quite high, actually.
                                        // shouldn't matter.
+
+        // 1 dec for for-loop
         for (int count = 0; bestOption.error > TOLERANCE && count < maxIterations; count++) {
             final RationalNumber mediant = RationalNumber.factoryMethod(low.rationalNumber.numerator + high.rationalNumber.numerator,
                     low.rationalNumber.divisor + high.rationalNumber.divisor);
             final Option mediantOption = Option.factory(mediant, value);
 
+            // 2 + 2 = 4 dec
             if (value < mediant.doubleValue()) {
                 if (high.error <= mediantOption.error) {
                     break;
@@ -157,13 +166,15 @@ public class RationalNumber extends Number {
 
                 low = mediantOption;
             }
-
+            // 2 dec
             if (mediantOption.error < bestOption.error) {
                 bestOption = mediantOption;
             }
         }
 
+        // 2 dec 1 out
         return negative ? bestOption.rationalNumber.negate() : bestOption.rationalNumber;
+        // Total: 18 dec
     }
 
     // The TIFF and EXIF specifications call for the use
@@ -205,7 +216,6 @@ public class RationalNumber extends Number {
             this.divisor = divisor;
         }
     }
-
     /**
      * A private constructor for methods such as negate() that create instances of this class using the content of the current instance.
      *
@@ -244,7 +254,6 @@ public class RationalNumber extends Number {
     public long longValue() {
         return numerator / divisor;
     }
-
     /**
      * Negates the value of the RationalNumber. If the numerator of this instance has its high-order bit set, then its value is too large to be treated as a
      * Java 32-bit signed integer. In such a case, the only way that a RationalNumber instance can be negated is to divide both terms by a common divisor, if a
