@@ -17,15 +17,18 @@
 
 package org.apache.commons.imaging;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import org.apache.commons.imaging.bytesource.ByteSource;
 import org.apache.commons.io.FilenameUtils;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ImagingGuessFormatTest extends AbstractImagingTest {
 
@@ -43,21 +46,28 @@ public class ImagingGuessFormatTest extends AbstractImagingTest {
     public static final String TGA_IMAGE_FILE = "tga\\1\\Oregon Scientific DS6639 - DSC_0307 - small.tga";
     public static final String UNKNOWN_IMAGE_FILE = "info.txt";
 
+    // ADD NEW UNTESTED FORMATS HERE
+
+    public static final String JBIG2_IMAGE_FILE = "jbig2\\002.jb2";
+
     public static Stream<Object[]> data() {
-        return Arrays.asList(new Object[] { ImageFormats.PNG, PNG_IMAGE_FILE }, new Object[] { ImageFormats.GIF, GIF_IMAGE_FILE },
-                new Object[] { ImageFormats.ICNS, ICNS_IMAGE_FILE },
+        return Arrays.asList(new Object[]{ImageFormats.PNG, PNG_IMAGE_FILE}, new Object[]{ImageFormats.GIF, GIF_IMAGE_FILE},
+                new Object[]{ImageFormats.ICNS, ICNS_IMAGE_FILE},
                 // TODO(cmchen): add ability to sniff ICOs if possible.
                 // new Object[] { ImageFormat.IMAGE_FORMAT_ICO, ICO_IMAGE_FILE },
-                new Object[] { ImageFormats.TIFF, TIFF_IMAGE_FILE }, new Object[] { ImageFormats.JPEG, JPEG_IMAGE_FILE },
-                new Object[] { ImageFormats.BMP, BMP_IMAGE_FILE }, new Object[] { ImageFormats.PSD, PSD_IMAGE_FILE },
-                new Object[] { ImageFormats.PBM, PBM_IMAGE_FILE }, new Object[] { ImageFormats.PGM, PGM_IMAGE_FILE },
-                new Object[] { ImageFormats.PPM, PPM_IMAGE_FILE },
+                new Object[]{ImageFormats.TIFF, TIFF_IMAGE_FILE}, new Object[]{ImageFormats.JPEG, JPEG_IMAGE_FILE},
+                new Object[]{ImageFormats.BMP, BMP_IMAGE_FILE}, new Object[]{ImageFormats.PSD, PSD_IMAGE_FILE},
+                new Object[]{ImageFormats.PBM, PBM_IMAGE_FILE}, new Object[]{ImageFormats.PGM, PGM_IMAGE_FILE},
+                new Object[]{ImageFormats.PPM, PPM_IMAGE_FILE},
                 // TODO(cmchen): add ability to sniff TGAs if possible.
                 // new Object[] { ImageFormat.IMAGE_FORMAT_TGA, TGA_IMAGE_FILE },
                 // TODO(cmchen): Add test images for these formats.
                 // new Object[] { ImageFormat.IMAGE_FORMAT_PNM, PNM_IMAGE_FILE },
                 // new Object[] { ImageFormat.IMAGE_FORMAT_JBIG2, JBIG2_IMAGE_FILE },
-                new Object[] { ImageFormats.UNKNOWN, UNKNOWN_IMAGE_FILE }).stream();
+                new Object[]{ImageFormats.UNKNOWN, UNKNOWN_IMAGE_FILE},
+                // ADD NEW UNTESTED FORMATS HERE
+                new Object[]{ImageFormats.JBIG2, JBIG2_IMAGE_FILE}
+        ).stream();
     }
 
     @ParameterizedTest
@@ -70,4 +80,41 @@ public class ImagingGuessFormatTest extends AbstractImagingTest {
         assertEquals(expectedFormat, guessedFormat);
     }
 
+    @Test
+    public void testNullByteSource() throws Exception {
+        final ImageFormat guessedFormat = Imaging.guessFormat((ByteSource) null);
+        assertEquals(ImageFormats.UNKNOWN, guessedFormat);
+    }
+
+    @Test
+    public void testUnreadableMagicNumbers() {
+        ByteSource byteSource = ByteSource.array(new byte[0]);
+        assertThrows(IllegalArgumentException.class,
+                () -> Imaging.guessFormat(byteSource),
+                "Able to guess format of unreadable magic numbers");
+    }
+
+    @Test
+    public void testStartingCorrectButNotEnoughBytes() throws IOException {
+        byte[] jbig2 = {(byte) 0x97, 0x4A};
+        final ByteSource byteSourceJbig2 = ByteSource.array(jbig2);
+        assertThrows(IllegalArgumentException.class,
+                () -> Imaging.guessFormat(byteSourceJbig2),
+                "Able to guess format of unreadable magic numbers");
+
+
+        byte[] riff1 = {'R', 'I', 'F'};
+        final ByteSource byteSourceRiff1 = ByteSource.array(riff1);
+        assertThrows(IllegalArgumentException.class,
+                () -> Imaging.guessFormat(byteSourceRiff1),
+                "Able to guess format of unreadable magic numbers");
+
+
+        byte[] riff2 = {'R', 'I', 'F', 'F'};
+        final ByteSource byteSourceRiff2 = ByteSource.array(riff2);
+        assertThrows(IllegalArgumentException.class,
+                () -> Imaging.guessFormat(byteSourceRiff2),
+                "Able to guess format of unreadable magic numbers");
+
+    }
 }
