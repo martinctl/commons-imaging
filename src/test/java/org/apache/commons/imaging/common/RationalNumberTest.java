@@ -134,4 +134,31 @@ public class RationalNumberTest extends AbstractImagingTest {
 
     }
 
+    @Test
+    public  void testDisplayString(){
+        // 1 / 2 case for the base case.
+        RationalNumber rational = new RationalNumber(1, 2);
+        assertEquals("0,5", rational.toDisplayString());
+
+        // Negative case
+        rational = new RationalNumber(-11, 333);
+        assertEquals("-0,033", rational.toDisplayString());
+
+        // What happens if float cause a problem or not case.
+        rational = new RationalNumber( 17/3, 3);
+        assertEquals("1,667", rational.toDisplayString());
+
+        // limit case
+        rational = new RationalNumber(Integer.MIN_VALUE, 3);
+        assertEquals("-715.827.882,667", rational.toDisplayString());
+
+        // divisor can divide numerator case. (This covers the if case at the beginning.)
+        rational = new RationalNumber(434230724, -22012);
+        assertEquals("-19727", rational.toDisplayString());
+
+        // Again the if case at the beginning but this time increasing the numerator to see the limits.
+        rational = new RationalNumber(Integer.MAX_VALUE-3, 2);
+        assertEquals("1073741822", rational.toDisplayString());
+    }
+
 }
